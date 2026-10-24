@@ -16,7 +16,7 @@
     "dev": "pnpm build && wrangler dev --config wrangler.dev.jsonc",
     "db:migrate:local": "wrangler d1 migrations apply aula --local --config wrangler.dev.jsonc",
     "db:migrate": "wrangler d1 migrations apply aula --remote",
-    "deploy": "pnpm build && wrangler deploy"
+    "release": "pnpm build && wrangler deploy"
   },
   "devDependencies": {
     "@playwright/test": "^1.55.0",

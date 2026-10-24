@@ -70,7 +70,7 @@ Trocea y calcula los hashes, sube a los mirrors y registra la entrada en la base
    pnpm exec wrangler d1 create aula        # copia el database_id a wrangler.jsonc y wrangler.dev.jsonc
    pnpm db:migrate                          # crea las tablas
    pnpm exec wrangler d1 execute aula --remote --command "INSERT INTO users(email,role) VALUES ('tu@email','admin')"
-   pnpm deploy                              # build + wrangler deploy (dominio aula.buzz)
+   pnpm release                             # build + wrangler deploy (dominio aula.buzz)
    ```
    Los secretos se ponen con `pnpm exec wrangler secret put NOMBRE` (ver `.env.example`); nunca en el repo.
 4. **Cloudflare Access (Zero Trust):** una aplicación que cubra `aula.buzz`, con login por código de un solo uso y una
