@@ -1,0 +1,92 @@
+---
+import Layout from "@aula/ui/Layout.astro";
+import { loadCatalog } from "../lib/catalog.ts";
+import { formatBytes } from "../lib/format.ts";
+import { TIPO_LABEL } from "../lib/schema.ts";
+import Dock from "../components/downloader/Dock.tsx";
+import DownloadButton from "../components/downloader/DownloadButton.tsx";
+import "../styles/recursos.css";
+
+const recursos = loadCatalog();
+const asignaturas = [...new Set(recursos.map((r) => r.asignatura))].sort((a, b) => a.localeCompare(b, "es"));
+const tipos = [...new Set(recursos.map((r) => r.tipo))];
+---
+
+<Layout title="Recursos" current="recursos" description="Máquinas virtuales, ISOs y archivos de clase.">
+  <h1>Recursos</h1>
+  <p class="muted">Descarga directo a la raíz de tu USB, sin pasar por Google Drive ni GitHub.</p>
+
+  <div class="layout">
+    <section aria-label="Catálogo">
+      <form class="filters" role="search" onsubmit="return false">
+        <input type="search" id="q" placeholder="Buscar: kali, redes, ubuntu…" aria-label="Buscar" />
+        <select id="asignatura" aria-label="Asignatura">
+          <option value="">Todas las asignaturas</option>
+          {asignaturas.map((a) => <option value={a}>{a}</option>)}
+        </select>
+        <select id="tipo" aria-label="Tipo">
+          <option value="">Todos los tipos</option>
+          {tipos.map((t) => <option value={t}>{TIPO_LABEL[t]}</option>)}
+        </select>
+      </form>
+
+      <p id="empty" class="muted" hidden>Ningún recurso coincide con la búsqueda.</p>
+      {recursos.length === 0 && <p class="muted">Todavía no hay recursos publicados.</p>}
+
+      <ul class="cards">
+        {
+          recursos.map((r) => (
+            <li
+              class="card resource"
+              data-search={[r.nombre, r.descripcion, r.asignatura, r.so ?? "", ...r.tags].join(" ")}
+              data-asignatura={r.asignatura}
+              data-tipo={r.tipo}
+            >
+              <div class="resource__meta">
+                <span class="badge">{TIPO_LABEL[r.tipo]}</span>
+                <span class="muted">{r.asignatura}</span>
+              </div>
+              <h2><a href={`/${r.id}/`}>{r.nombre}</a></h2>
+              <p class="muted">{r.descripcion}</p>
+              <p class="muted resource__facts">
+                {formatBytes(r.archivo.tamano)}
+                {r.so && ` · ${r.so}`}
+                {r.partes.length > 1 && ` · ${r.partes.length} partes`}
+              </p>
+              <DownloadButton
+                client:load
+                resource={{ id: r.id, nombre: r.nombre, archivo: r.archivo, partes: r.partes.map((p) => ({ size: p.tamano, sha256: p.sha256 })) }}
+                directUrl={r.partes.length === 1 && r.partes[0]!.github_asset_id ? `/api/gh/${r.partes[0]!.github_asset_id}` : undefined}
+              />
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+    <Dock client:load />
+  </div>
+</Layout>
+
+<script>
+  import { matchesQuery } from "../lib/format.ts";
+
+  const q = document.querySelector<HTMLInputElement>("#q")!;
+  const asignatura = document.querySelector<HTMLSelectElement>("#asignatura")!;
+  const tipo = document.querySelector<HTMLSelectElement>("#tipo")!;
+  const empty = document.querySelector<HTMLElement>("#empty")!;
+  const items = [...document.querySelectorAll<HTMLElement>(".resource")];
+
+  function apply() {
+    let visible = 0;
+    for (const el of items) {
+      const show =
+        matchesQuery(el.dataset.search ?? "", q.value) &&
+        (!asignatura.value || el.dataset.asignatura === asignatura.value) &&
+        (!tipo.value || el.dataset.tipo === tipo.value);
+      el.hidden = !show;
+      if (show) visible++;
+    }
+    empty.hidden = visible > 0 || items.length === 0;
+  }
+  for (const control of [q, asignatura, tipo]) control.addEventListener("input", apply);
+</script>

@@ -1,0 +1,14 @@
+{
+  "name": "@aula/auth",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./jwt": "./src/jwt.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  }
+}

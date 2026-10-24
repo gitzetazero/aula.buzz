@@ -1,0 +1,20 @@
+{
+  "name": "@aula/ui",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "keywords": ["astro-component"],
+  "exports": {
+    "./Layout.astro": "./src/Layout.astro",
+    "./Header.astro": "./src/Header.astro",
+    "./styles.css": "./src/styles.css",
+    "./sites": "./src/sites.ts"
+  },
+  "peerDependencies": {
+    "astro": "^5.0.0"
+  },
+  "scripts": {
+    "typecheck": "tsc -p ."
+  }
+}

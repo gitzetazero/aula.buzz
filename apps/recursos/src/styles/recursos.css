@@ -1,0 +1,47 @@
+.layout {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  align-items: start;
+  margin-top: 1.5rem;
+}
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+}
+.dock { position: sticky; top: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.dock h2, .dock h3 { margin: 0; font-size: 1.05rem; }
+.filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
+.filters input[type="search"] { flex: 1 1 220px; }
+.cards { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.resource[hidden] { display: none; }
+.resource { display: flex; flex-direction: column; gap: 0.5rem; }
+.resource h2 { font-size: 1.15rem; margin: 0; }
+.resource h2 a { color: var(--text); text-decoration: none; }
+.resource h2 a:hover { color: var(--accent); }
+.resource p { margin: 0; }
+.resource__meta { display: flex; gap: 0.6rem; align-items: center; font-size: 0.85rem; }
+.resource__facts { font-size: 0.85rem; }
+.resource .dl { margin-top: auto; }
+.dl { display: flex; flex-direction: column; gap: 0.5rem; }
+.facts { display: grid; grid-template-columns: max-content 1fr; gap: 0.35rem 1rem; }
+.facts dt { color: var(--muted); }
+.facts dd { margin: 0; }
+.hash { word-break: break-all; }
+.prose pre { background: var(--surface-2); padding: 0.75rem; border-radius: 8px; overflow-x: auto; }
+.usbs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.usbs li { display: flex; align-items: center; gap: 0.5rem; }
+.usbs label { display: flex; align-items: center; gap: 0.4rem; flex: 1; min-width: 0; }
+.alias { flex: 1; padding: 0.3rem 0.5rem !important; }
+.pill { font-size: 0.72rem; padding: 0.1rem 0.5rem; border-radius: 999px; background: var(--surface-2); white-space: nowrap; }
+.pill--ready { background: var(--accent-soft); color: var(--ok); }
+.pill--needs-permission { background: var(--warn-soft); color: var(--warn); }
+.guide { font-size: 0.9rem; }
+.guide summary { cursor: pointer; color: var(--accent); }
+.verify { font-size: 0.85rem; display: flex; gap: 0.5rem; align-items: flex-start; color: var(--muted); }
+.jobs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+.job { display: flex; flex-direction: column; gap: 0.35rem; }
+.job__head { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.job__head .btn { margin-left: auto; }
+.job__meta { font-size: 0.8rem; }
+progress { width: 100%; height: 0.6rem; accent-color: var(--accent); }
+.job[data-status="done"] .job__head span { color: var(--ok); }

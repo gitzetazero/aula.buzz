@@ -1,0 +1,25 @@
+# Catálogo de recursos. Lo genera `pnpm publish-resource` (ver CONTRIBUTING.md).
+# Aquí solo hay metadatos: los archivos viven en mirrors privados.
+#
+# Ejemplo de entrada (los ids y hashes son ilustrativos):
+#
+#  - id: kali-2026-1
+#    nombre: Kali Linux 2026.1
+#    descripcion: VM con las herramientas del módulo de seguridad ya instaladas.
+#    asignatura: Seguridad informática
+#    tipo: vm
+#    so: Kali Linux
+#    tags: [pentesting, linux]
+#    actualizado: 2026-10-01
+#    hipervisor: VirtualBox 7
+#    requisitos: { ram_gb: 4, disco_gb: 40, cpus: 2 }
+#    credenciales:
+#      - { usuario: kali, password: kali, nota: Cámbiala tras el primer arranque }
+#    instrucciones: |
+#      1. Archivo → Importar servicio virtualizado.
+#      2. Selecciona el `.ova` y pulsa Importar.
+#    archivo: { nombre: kali-2026-1.ova, tamano: 4000000000, sha256: "<64 hex>" }
+#    partes:
+#      - { tamano: 2000000000, sha256: "<64 hex>", github_asset_id: 123456, drive_id: "1AbC..." }
+#      - { tamano: 2000000000, sha256: "<64 hex>", github_asset_id: 123457, drive_id: "1DeF..." }
+recursos: []

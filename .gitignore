@@ -1,0 +1,10 @@
+node_modules/
+dist/
+.astro/
+.wrangler/
+.dev.vars
+.env
+*.parts/
+apps/recursos/src/generated/
+test-results/
+playwright-report/

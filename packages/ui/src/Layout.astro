@@ -1,0 +1,37 @@
+---
+import Header from "./Header.astro";
+import "./styles.css";
+
+interface Props {
+  title: string;
+  description?: string;
+  current?: string;
+}
+const { title, description = "La plataforma de la clase.", current } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%234f46e5'/><text x='16' y='22' font-size='16' text-anchor='middle' fill='white' font-family='system-ui'>a</text></svg>" />
+    <title>{title === "aula.buzz" ? title : `${title} · aula.buzz`}</title>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+    <Header current={current} />
+    <main id="main" class="container">
+      <slot />
+    </main>
+    <footer class="site-footer container">
+      <p>
+        aula.buzz es software libre bajo licencia MIT ·
+        <a href="https://github.com/gitzetazero/aula.buzz">Código fuente</a>
+      </p>
+    </footer>
+  </body>
+</html>

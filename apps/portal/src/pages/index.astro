@@ -1,0 +1,48 @@
+---
+import Layout from "@aula/ui/Layout.astro";
+import { SECTIONS } from "@aula/ui/sites";
+---
+
+<Layout title="aula.buzz" current="portal">
+  <h1>Bienvenido a aula.buzz</h1>
+  <p class="muted">Todo lo que necesitamos en clase, en un solo sitio.</p>
+  <div class="grid">
+    {
+      SECTIONS.map((s) =>
+        s.url ? (
+          <a class="card section" href={s.url}>
+            <h2>{s.nombre}</h2>
+            <p class="muted">{s.descripcion}</p>
+          </a>
+        ) : (
+          <div class="card section section--soon" aria-disabled="true">
+            <h2>{s.nombre}</h2>
+            <p class="muted">{s.descripcion}</p>
+          </div>
+        ),
+      )
+    }
+  </div>
+</Layout>
+
+<style>
+  .grid {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    margin-top: 1.5rem;
+  }
+  .section {
+    text-decoration: none;
+    color: inherit;
+  }
+  a.section:hover {
+    border-color: var(--accent);
+  }
+  .section--soon {
+    opacity: 0.6;
+  }
+  .section p {
+    margin: 0;
+  }
+</style>

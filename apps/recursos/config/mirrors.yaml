@@ -1,0 +1,8 @@
+# Orden en que el descargador prueba los mirrors. Si uno falla (error, cuota,
+# corte), continúa con el siguiente desde el mismo byte.
+# Un mirror que no esté en esta lista, o con `activo: false`, no se usa.
+mirrors:
+  - id: drive
+    activo: true
+  - id: github
+    activo: true
