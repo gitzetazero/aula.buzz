@@ -46,7 +46,7 @@ Para ver Recursos en local con datos de prueba, copia `.env.example` a `apps/rec
 ```bash
 pnpm publish-resource ./kali.ova --id kali-2026-1 --nombre "Kali Linux 2026.1" \
   --descripcion "VM del módulo de seguridad" --asignatura "Seguridad" --tipo vm --so "Kali Linux" \
-  --github-repo usuario/aula-recursos --rclone-remote gdrive:aula-recursos
+  --github-repo gitzetazero/aulareleases --rclone-remote gdrive:aula-recursos
 ```
 
 Trocea y calcula los hashes, sube a los mirrors y añade la entrada a `apps/recursos/catalog/resources.yaml`.
@@ -58,8 +58,8 @@ Revisa el cambio, haz commit y push. Requiere [`gh`](https://cli.github.com) aut
 > Los pasos de Cloudflare y Google no se han podido probar de extremo a extremo desde el entorno de desarrollo;
 > si algo no cuadra con la interfaz actual, abre un issue.
 
-1. **GitHub:** crea un repo **privado** (`aula-recursos`) y un token *fine-grained* con permiso de solo lectura de
-   *Contents* sobre ese repo → `GH_ASSETS_TOKEN`, y `GH_ASSETS_REPO=usuario/aula-recursos`.
+1. **GitHub:** crea un repo **privado** (`aulareleases`) y un token *fine-grained* con permiso de solo lectura de
+   *Contents* sobre ese repo → `GH_ASSETS_TOKEN`, y `GH_ASSETS_REPO=gitzetazero/aulareleases`.
 2. **Google Drive:** en Google Cloud crea un proyecto, activa la *Google Drive API*, crea una *service account* y
    descarga su clave JSON → `GDRIVE_SA_JSON` (el JSON entero). En Drive, **comparte la carpeta de recursos con el
    email de la service account como «Lector»** (sin enlace público).

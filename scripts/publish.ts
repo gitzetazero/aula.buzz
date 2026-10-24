@@ -4,7 +4,7 @@
 //
 //   pnpm publish-resource ./kali.ova --id kali-2026-1 --nombre "Kali Linux 2026.1" \
 //     --descripcion "VM del módulo de seguridad" --asignatura "Seguridad" --tipo vm \
-//     --github-repo usuario/aula-recursos --rclone-remote gdrive:aula-recursos
+//     --github-repo gitzetazero/aulareleases --rclone-remote gdrive:aula-recursos
 //
 // Requisitos: `gh` autenticado (GitHub) y `rclone` con un remote de Drive.
 
