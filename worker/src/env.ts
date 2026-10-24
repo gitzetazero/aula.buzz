@@ -2,6 +2,8 @@ import type { AuthEnv } from "@aula/auth";
 
 export interface Env extends AuthEnv {
   DB: D1Database;
+  /** Administrador principal: no se le puede quitar el rol, desactivar ni borrar, y siempre tiene acceso. */
+  OWNER_EMAIL?: string;
   ASSETS: Fetcher;
   /** Lectura del repo privado de releases (descargas). */
   GH_ASSETS_TOKEN?: string;

@@ -23,6 +23,7 @@ export interface UserRow {
   role: "admin" | "student";
   active: boolean;
   created_at: string;
+  owner?: boolean;
 }
 export interface AccessResult {
   synced: boolean;

@@ -53,9 +53,10 @@ export default function Users() {
             {users.map((u) => (
               <tr key={u.email}>
                 <td>{u.email}</td>
-                <td><span class="badge">{u.role === "admin" ? "Admin" : "Alumno"}</span></td>
+                <td><span class="badge">{u.owner ? "Admin principal" : u.role === "admin" ? "Admin" : "Alumno"}</span></td>
                 <td>{u.active ? <span class="ok">Activo</span> : <span class="muted">Desactivado</span>}</td>
                 <td class="actions">
+                  {u.owner ? <span class="muted">Protegido</span> : <>
                   <button class="btn btn--small" onClick={() => patch(u, { role: u.role === "admin" ? "student" : "admin" }, `Rol de ${u.email} cambiado.`)}>
                     {u.role === "admin" ? "Quitar admin" : "Hacer admin"}
                   </button>
@@ -68,6 +69,7 @@ export default function Users() {
                   >
                     Eliminar
                   </button>
+                  </>}
                 </td>
               </tr>
             ))}

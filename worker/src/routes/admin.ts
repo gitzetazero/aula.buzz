@@ -21,9 +21,10 @@ import { syncAccessPolicy } from "../lib/access.ts";
 import { getDriveToken, parseServiceAccount, SCOPE_WRITE } from "../lib/gdrive.ts";
 import { deleteRelease, ensureRelease, githubStatus } from "../lib/github.ts";
 import { getAnnouncement, getMirrors, getSections, type SectionSetting } from "../lib/settings.ts";
-import { currentRole } from "./public.ts";
+import { currentRole, isOwner } from "./public.ts";
 
 const forbidden = () => json({ error: "Solo para administradores" }, { status: 403 });
+const ownerLocked = () => json({ error: "Es el administrador principal: no se puede modificar" }, { status: 403 });
 const bad = (message: string) => json({ error: message }, { status: 400 });
 
 const emailSchema = z.string().trim().toLowerCase().email().max(254);
@@ -38,7 +39,10 @@ async function guard(request: Request, env: Env): Promise<string | Response> {
 }
 
 async function syncNow(env: Env) {
-  return syncAccessPolicy(env, await activeEmails(env.DB));
+  const emails = await activeEmails(env.DB);
+  const owner = env.OWNER_EMAIL?.trim().toLowerCase();
+  if (owner && !emails.includes(owner)) emails.push(owner);
+  return syncAccessPolicy(env, emails);
 }
 
 export async function handleAdmin(request: Request, env: Env, path: string[]): Promise<Response> {
@@ -50,11 +54,15 @@ export async function handleAdmin(request: Request, env: Env, path: string[]): P
 
   // ---------- usuarios ----------
   if (section === "users") {
-    if (!a && method === "GET") return json({ users: await listUsers(env.DB) });
+    if (!a && method === "GET") {
+      const users = (await listUsers(env.DB)).map((u) => ({ ...u, owner: isOwner(env, u.email) }));
+      return json({ users });
+    }
 
     if (!a && method === "POST") {
       const input = z.object({ email: emailSchema, role: roleSchema.default("student") }).safeParse(await body());
       if (!input.success) return bad("Email o rol no válidos");
+      if (isOwner(env, input.data.email)) return ownerLocked();
       await upsertUser(env.DB, input.data.email, input.data.role, true);
       await logAction(env.DB, who, "usuario.alta", input.data.email);
       return json({ ok: true, access: await syncNow(env) });
@@ -64,6 +72,7 @@ export async function handleAdmin(request: Request, env: Env, path: string[]): P
       const email = emailSchema.safeParse(decodeURIComponent(a));
       if (!email.success) return bad("Email no válido");
       const row = await getUserRow(env.DB, email.data);
+      if (isOwner(env, email.data)) return ownerLocked();
       if (!row) return json({ error: "Usuario desconocido" }, { status: 404 });
 
       if (method === "DELETE") {

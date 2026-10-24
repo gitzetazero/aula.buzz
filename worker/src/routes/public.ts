@@ -4,7 +4,12 @@ import type { Env } from "../env.ts";
 import { getAnnouncement, getSections } from "../lib/settings.ts";
 
 /** Rol del usuario según D1 (fuera de D1 no es admin; Access ya filtró el acceso). */
+export function isOwner(env: Env, email: string): boolean {
+  return Boolean(env.OWNER_EMAIL) && env.OWNER_EMAIL!.trim().toLowerCase() === email.trim().toLowerCase();
+}
+
 export async function currentRole(env: Env, email: string): Promise<"admin" | "student"> {
+  if (isOwner(env, email)) return "admin"; // el principal nunca se queda fuera aunque falte su fila en D1
   const row = await getUserRow(env.DB, email);
   return row?.active && row.role === "admin" ? "admin" : "student";
 }
