@@ -1,0 +1,18 @@
+.tabs { display: flex; flex-wrap: wrap; gap: 0.25rem; margin: 1rem 0; border-bottom: 1px solid var(--border, #d4d4d8); }
+.tabs button { background: none; border: 0; padding: 0.6rem 0.9rem; font: inherit; color: inherit; cursor: pointer; border-bottom: 2px solid transparent; }
+.tabs button[aria-selected="true"] { border-bottom-color: var(--accent); color: var(--accent); font-weight: 600; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { text-align: left; padding: 0.5rem 0.6rem; border-bottom: 1px solid var(--border, #d4d4d8); vertical-align: middle; }
+.table th { font-size: 0.85rem; color: var(--muted, #6b7280); font-weight: 600; }
+.row { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1rem; }
+.row input, .row select { flex: 1 1 200px; }
+.stack { display: grid; gap: 1rem; }
+.form { display: grid; gap: 0.75rem; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+.form label { display: grid; gap: 0.25rem; font-size: 0.9rem; }
+.form .wide { grid-column: 1 / -1; }
+.form textarea { min-height: 7rem; font: inherit; }
+.progress { height: 0.5rem; background: var(--accent-soft); border-radius: 999px; overflow: hidden; }
+.progress > div { height: 100%; background: var(--accent); transition: width 0.2s; }
+.ok { color: #15803d; }
+.ko { color: #b91c1c; }
+.actions { display: flex; gap: 0.4rem; flex-wrap: wrap; }

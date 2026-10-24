@@ -7,18 +7,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "wrangler pages dev dist",
     "typecheck": "astro check"
   },
   "dependencies": {
-    "@aula/auth": "workspace:*",
     "@aula/ui": "workspace:*",
     "astro": "^5.18.2"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.12",
-    "@cloudflare/workers-types": "^4.20260702.1",
-    "typescript": "^5.9.3",
-    "wrangler": "^4.152.0"
+    "typescript": "^5.9.3"
   }
 }

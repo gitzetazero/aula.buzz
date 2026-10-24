@@ -1,13 +1,9 @@
-// URLs de los sitios de aula.buzz. Se pueden sobrescribir en build con
-// PUBLIC_PORTAL_URL / PUBLIC_RECURSOS_URL (útil para forks y desarrollo).
+// Secciones de aula.buzz. Viven todas bajo el mismo dominio, en rutas
+// (/recursos, /admin…). Estos valores son los de fábrica: el panel de admin
+// puede ocultarlas, renombrarlas o añadir otras (se leen de /api/settings).
 
-const env = (import.meta as { env?: Record<string, string | undefined> }).env ?? {};
-
-export const PORTAL_URL = env.PUBLIC_PORTAL_URL ?? "https://aula.buzz";
-export const RECURSOS_URL = env.PUBLIC_RECURSOS_URL ?? "https://recursos.aula.buzz";
-
-/** El logout de Access cierra la sesión en todos los subdominios. */
-export const LOGOUT_URL = `${PORTAL_URL}/cdn-cgi/access/logout`;
+/** El logout de Access cierra la sesión de todo el dominio. */
+export const LOGOUT_URL = "/cdn-cgi/access/logout";
 
 export interface Section {
   id: string;
@@ -21,7 +17,7 @@ export const SECTIONS: Section[] = [
     id: "recursos",
     nombre: "Recursos",
     descripcion: "Máquinas virtuales, ISOs y archivos de clase, directos a tu USB.",
-    url: RECURSOS_URL,
+    url: "/recursos/",
   },
   { id: "apuntes", nombre: "Apuntes", descripcion: "Próximamente." },
   { id: "calendario", nombre: "Calendario", descripcion: "Próximamente." },

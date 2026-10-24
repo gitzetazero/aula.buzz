@@ -1,6 +1,6 @@
 // Publica un recurso: trocea el archivo, calcula los SHA-256, lo sube a los
 // mirrors (GitHub Releases en un repo privado y/o Google Drive vía rclone) y
-// añade la entrada a apps/recursos/catalog/resources.yaml.
+// registra la entrada en el catálogo (base de datos D1 del Worker).
 //
 //   pnpm publish-resource ./kali.ova --id kali-2026-1 --nombre "Kali Linux 2026.1" \
 //     --descripcion "VM del módulo de seguridad" --asignatura "Seguridad" --tipo vm \
@@ -9,16 +9,14 @@
 // Requisitos: `gh` autenticado (GitHub) y `rclone` con un remote de Drive.
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { mkdtempSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join, resolve } from "node:path";
 import { parseArgs } from "node:util";
-import { parseCatalog } from "../apps/recursos/src/lib/catalog.ts";
-import { PART_SIZE } from "../apps/recursos/src/lib/schema.ts";
-import { upsertResource } from "./lib/catalog-edit.ts";
+import { PART_SIZE } from "@aula/db/schema";
+import { upsertSql } from "./lib/catalog-sql.ts";
 import { splitAndHash } from "./lib/split.ts";
 
-const CATALOG = resolve(dirname(fileURLToPath(import.meta.url)), "../apps/recursos/catalog/resources.yaml");
 
 const HELP = `Uso: pnpm publish-resource <archivo> --id <id> --nombre <t> --descripcion <t> --asignatura <t> --tipo <vm|iso|archivo|comprimido> [opciones]
 
@@ -126,10 +124,12 @@ async function main() {
     partes,
   };
 
-  const updated = upsertResource(readFileSync(CATALOG, "utf8"), entry);
-  parseCatalog(updated); // lanza si el resultado no es válido
-  writeFileSync(CATALOG, updated);
-  console.log(`✔ ${id} añadido a ${CATALOG}\n  Revisa el cambio, haz commit y push: Cloudflare Pages lo despliega solo.`);
+  const dir = mkdtempSync(join(tmpdir(), "aula-publish-"));
+  const sqlFile = join(dir, "resource.sql");
+  writeFileSync(sqlFile, upsertSql(entry)); // lanza si la entrada no es válida
+  console.log("→ Registrando en el catálogo (D1 remota)…");
+  execFileSync("pnpm", ["exec", "wrangler", "d1", "execute", "aula", "--remote", "--file", sqlFile], { stdio: "inherit", shell: process.platform === "win32" });
+  console.log(`✔ ${id} publicado. Ya aparece en aula.buzz/recursos.`);
   console.log(`  Puedes borrar ${outDir} cuando quieras.`);
 }
 

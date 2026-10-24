@@ -1,9 +1,9 @@
-// Servidor de pruebas: sirve apps/recursos/dist y simula /api/* y los mirrors.
+// Servidor de pruebas: sirve apps/recursos/dist bajo /recursos y simula /api/* y los mirrors.
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 import { fileURLToPath } from "node:url";
-import { parts } from "./fixture.ts";
+import { FILE_NAME, parts, sha, whole } from "./fixture.ts";
 
 const DIST = fileURLToPath(new URL("../apps/recursos/dist", import.meta.url));
 const PORT = Number(process.env.PORT ?? 4322);
@@ -52,7 +52,21 @@ createServer(async (req, res) => {
       res.writeHead(204);
       return res.end();
     }
-    if (url.pathname === "/api/ticket" && req.method === "POST") {
+    const resource = {
+      id: "demo-vm", nombre: "VM de prueba", descripcion: "Recurso sintético para los tests end-to-end.", asignatura: "Sistemas",
+      tipo: "vm", so: "Debian", tags: [], actualizado: "2026-10-01", credenciales: [],
+      archivo: { nombre: FILE_NAME, tamano: whole.length, sha256: sha(whole) },
+      partes: parts.map((p) => ({ tamano: p.length, sha256: sha(p) })),
+    };
+    if (url.pathname === "/api/recursos/catalog") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify({ recursos: [resource] }));
+    }
+    if (url.pathname === "/api/recursos/catalog/demo-vm") {
+      res.writeHead(200, { "Content-Type": "application/json" });
+      return res.end(JSON.stringify(resource));
+    }
+    if (url.pathname === "/api/recursos/ticket" && req.method === "POST") {
       let raw = "";
       for await (const c of req) raw += c;
       const { part } = JSON.parse(raw) as { part: number };
@@ -77,7 +91,8 @@ createServer(async (req, res) => {
       if (mirror === "github" && Number(idx) === stats.failGithubPart && start === "0") return sendBody(res, req, data, 70_000);
       return sendBody(res, req, data);
     }
-    let path = normalize(join(DIST, url.pathname));
+    if (!url.pathname.startsWith("/recursos/")) throw new Error("fuera de /recursos");
+    let path = normalize(join(DIST, url.pathname.slice("/recursos".length)));
     if (!path.startsWith(DIST)) throw new Error("fuera de dist");
     if (url.pathname.endsWith("/")) path = join(path, "index.html");
     const file = await readFile(path);

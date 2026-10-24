@@ -1,5 +1,5 @@
 ---
-import { LOGOUT_URL, PORTAL_URL, SECTIONS } from "./sites.ts";
+import { LOGOUT_URL, SECTIONS } from "./sites.ts";
 
 interface Props {
   current?: string;
@@ -9,8 +9,8 @@ const { current } = Astro.props;
 
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="brand" href={PORTAL_URL}>aula<span>.buzz</span></a>
-    <nav class="site-nav" aria-label="Secciones">
+    <a class="brand" href="/">aula<span>.buzz</span></a>
+    <nav class="site-nav" aria-label="Secciones" data-nav>
       {
         SECTIONS.filter((s) => s.url).map((s) => (
           <a href={s.url} aria-current={s.id === current ? "page" : undefined}>
@@ -27,17 +27,61 @@ const { current } = Astro.props;
 </header>
 
 <script>
-  // Cada app expone /api/me con el mismo handler de @aula/auth.
-  fetch("/api/me", { credentials: "same-origin" })
-    .then((r) => (r.ok ? r.json() : null))
-    .then((user: { email: string } | null) => {
-      if (!user) return;
+  interface Section {
+    id: string;
+    nombre: string;
+    descripcion: string;
+    url?: string;
+  }
+  interface Settings {
+    sections: Section[];
+    announcement: string;
+  }
+  interface Me {
+    email: string;
+    role?: string;
+  }
+  const w = window as unknown as { aulaSettings?: Promise<Settings | null> };
+  // Una sola petición por página; el portal reutiliza la misma promesa.
+  w.aulaSettings = fetch("/api/settings", { credentials: "same-origin" })
+    .then((r) => (r.ok ? (r.json() as Promise<Settings>) : null))
+    .catch(() => null);
+
+  function link(href: string, text: string, active: boolean) {
+    const a = document.createElement("a");
+    a.href = href;
+    a.textContent = text;
+    if (active) a.setAttribute("aria-current", "page");
+    return a;
+  }
+
+  const me = fetch("/api/me", { credentials: "same-origin" })
+    .then((r) => (r.ok ? (r.json() as Promise<Me>) : null))
+    .catch(() => null);
+
+  Promise.all([me, w.aulaSettings]).then(([user, settings]) => {
+    if (user) {
       const box = document.querySelector<HTMLElement>("[data-session]");
       const email = document.querySelector<HTMLElement>("[data-session-email]");
       if (box && email) {
         email.textContent = user.email;
         box.hidden = false;
       }
-    })
-    .catch(() => {});
+    }
+    const nav = document.querySelector<HTMLElement>("[data-nav]");
+    if (nav && (settings || user?.role === "admin")) {
+      const active = (href: string) => href !== "/" && location.pathname.startsWith(href.replace(/\/$/, ""));
+      nav.replaceChildren(
+        ...(settings?.sections ?? []).filter((s) => s.url).map((s) => link(s.url!, s.nombre, active(s.url!))),
+        ...(user?.role === "admin" ? [link("/admin/", "Admin", location.pathname.startsWith("/admin"))] : []),
+      );
+    }
+    if (settings?.announcement) {
+      const bar = document.querySelector<HTMLElement>("[data-announcement]");
+      if (bar) {
+        bar.textContent = settings.announcement;
+        bar.hidden = false;
+      }
+    }
+  });
 </script>

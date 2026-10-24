@@ -23,6 +23,7 @@ const { title, description = "La plataforma de la clase.", current } = Astro.pro
   </head>
   <body>
     <a class="skip-link" href="#main">Saltar al contenido</a>
+    <div class="announcement" data-announcement role="status" hidden></div>
     <Header current={current} />
     <main id="main" class="container">
       <slot />

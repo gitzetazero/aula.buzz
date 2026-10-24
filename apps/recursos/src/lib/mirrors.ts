@@ -2,7 +2,7 @@ import type { Source } from "./download.ts";
 
 /** Pide al servidor las fuentes (URL + cabeceras) de una parte. */
 export async function fetchSources(resourceId: string, part: number, _refresh = false): Promise<Source[]> {
-  const res = await fetch("/api/ticket", {
+  const res = await fetch("/api/recursos/ticket", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "same-origin",

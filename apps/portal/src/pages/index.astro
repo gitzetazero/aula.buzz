@@ -6,7 +6,7 @@ import { SECTIONS } from "@aula/ui/sites";
 <Layout title="aula.buzz" current="portal">
   <h1>Bienvenido a aula.buzz</h1>
   <p class="muted">Todo lo que necesitamos en clase, en un solo sitio.</p>
-  <div class="grid">
+  <div class="grid" data-sections>
     {
       SECTIONS.map((s) =>
         s.url ? (
@@ -25,7 +25,36 @@ import { SECTIONS } from "@aula/ui/sites";
   </div>
 </Layout>
 
-<style>
+<script>
+  // Las secciones visibles las decide el panel de administración.
+  interface Section {
+    nombre: string;
+    descripcion: string;
+    url?: string;
+  }
+  const w = window as unknown as { aulaSettings?: Promise<{ sections: Section[] } | null> };
+  w.aulaSettings?.then((settings) => {
+    const grid = document.querySelector<HTMLElement>("[data-sections]");
+    if (!settings || !grid) return;
+    grid.replaceChildren(
+      ...settings.sections.map((s) => {
+        const el = document.createElement(s.url ? "a" : "div");
+        el.className = s.url ? "card section" : "card section section--soon";
+        if (s.url) (el as HTMLAnchorElement).href = s.url;
+        else el.setAttribute("aria-disabled", "true");
+        const h = document.createElement("h2");
+        h.textContent = s.nombre;
+        const p = document.createElement("p");
+        p.className = "muted";
+        p.textContent = s.descripcion;
+        el.append(h, p);
+        return el;
+      }),
+    );
+  });
+</script>
+
+<style is:global>
   .grid {
     display: grid;
     gap: 1rem;

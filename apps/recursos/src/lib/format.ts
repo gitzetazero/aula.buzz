@@ -48,3 +48,10 @@ export function matchesQuery(haystack: string, query: string): boolean {
   const text = norm(haystack);
   return terms.every((t) => text.includes(t));
 }
+
+export const TIPO_LABEL: Record<string, string> = {
+  vm: "Máquina virtual",
+  iso: "ISO",
+  archivo: "Archivo",
+  comprimido: "Comprimido",
+};

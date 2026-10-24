@@ -8,6 +8,9 @@ importers:
 
   .:
     devDependencies:
+      '@aula/db':
+        specifier: workspace:*
+        version: link:packages/db
       '@playwright/test':
         specifier: ^1.55.0
         version: 1.64.1
@@ -23,18 +26,37 @@ importers:
       vitest:
         specifier: ^3.2.7
         version: 3.2.7(@types/debug@4.1.13)(@types/node@22.20.5)(tsx@4.23.15)(yaml@2.9.1)
-      yaml:
-        specifier: ^2.9.1
-        version: 2.9.1
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
+      wrangler:
+        specifier: ^4.152.0
+        version: 4.152.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
+
+  apps/admin:
+    dependencies:
+      '@astrojs/preact':
+        specifier: ^4.1.3
+        version: 4.1.3(@babel/core@7.29.7)(@types/node@22.20.5)(preact@10.29.8)(rollup@4.65.0)(tsx@4.23.15)(yaml@2.9.1)
+      '@aula/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      astro:
+        specifier: ^5.18.2
+        version: 5.18.2(@types/node@22.20.5)(idb-keyval@6.3.0)(rollup@4.65.0)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1)
+      hash-wasm:
+        specifier: ^4.12.0
+        version: 4.12.0
+      preact:
+        specifier: ^10.29.8
+        version: 10.29.8(preact-render-to-string@6.8.1)
+    devDependencies:
+      '@astrojs/check':
+        specifier: ^0.9.12
+        version: 0.9.12(@emnapi/runtime@1.11.3)(prettier@3.9.10)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
 
   apps/portal:
     dependencies:
-      '@aula/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
       '@aula/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -45,24 +67,15 @@ importers:
       '@astrojs/check':
         specifier: ^0.9.12
         version: 0.9.12(@emnapi/runtime@1.11.3)(prettier@3.9.10)(typescript@5.9.3)
-      '@cloudflare/workers-types':
-        specifier: ^4.20260702.1
-        version: 4.20260702.1
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
-      wrangler:
-        specifier: ^4.152.0
-        version: 4.152.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
 
   apps/recursos:
     dependencies:
       '@astrojs/preact':
         specifier: ^4.1.3
         version: 4.1.3(@babel/core@7.29.7)(@types/node@22.20.5)(preact@10.29.8)(rollup@4.65.0)(tsx@4.23.15)(yaml@2.9.1)
-      '@aula/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
       '@aula/ui':
         specifier: workspace:*
         version: link:../../packages/ui
@@ -81,16 +94,47 @@ importers:
       preact:
         specifier: ^10.29.8
         version: 10.29.8(preact-render-to-string@6.8.1)
-      yaml:
-        specifier: ^2.9.1
-        version: 2.9.1
-      zod:
-        specifier: ^3.25.76
-        version: 3.25.76
     devDependencies:
       '@astrojs/check':
         specifier: ^0.9.12
         version: 0.9.12(@emnapi/runtime@1.11.3)(prettier@3.9.10)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/auth: {}
+
+  packages/db:
+    dependencies:
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20260702.1
+        version: 4.20260702.1
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+  packages/ui:
+    dependencies:
+      astro:
+        specifier: ^5.0.0
+        version: 5.18.2(@types/node@22.20.5)(idb-keyval@6.3.0)(rollup@4.65.0)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1)
+
+  worker:
+    dependencies:
+      '@aula/auth':
+        specifier: workspace:*
+        version: link:../packages/auth
+      '@aula/db':
+        specifier: workspace:*
+        version: link:../packages/db
+      zod:
+        specifier: ^3.25.76
+        version: 3.25.76
+    devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20260702.1
         version: 4.20260702.1
@@ -100,14 +144,6 @@ importers:
       wrangler:
         specifier: ^4.152.0
         version: 4.152.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
-
-  packages/auth: {}
-
-  packages/ui:
-    dependencies:
-      astro:
-        specifier: ^5.0.0
-        version: 5.18.2(@types/node@22.20.5)(idb-keyval@6.3.0)(rollup@4.65.0)(tsx@4.23.15)(typescript@5.9.3)(yaml@2.9.1)
 
 packages:
 

@@ -30,7 +30,7 @@ test.beforeEach(async ({ page, request }) => {
 });
 
 test("el catálogo lista el recurso, filtra y abre la ficha", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/recursos/");
   await expect(page.getByRole("heading", { name: "VM de prueba" })).toBeVisible();
   await page.getByLabel("Buscar").fill("ubuntu");
   await expect(page.getByText("Ningún recurso coincide")).toBeVisible();
@@ -43,7 +43,7 @@ test("el catálogo lista el recurso, filtra y abre la ficha", async ({ page }) =
 });
 
 test("descarga al USB, cambia de mirror a mitad de una parte y verifica el hash", async ({ page, request }) => {
-  await page.goto("/");
+  await page.goto("/recursos/");
   await page.getByRole("button", { name: "Conectar USB" }).click();
   await expect(page.getByText("Conectado")).toBeVisible();
 
@@ -64,7 +64,7 @@ test("descarga al USB, cambia de mirror a mitad de una parte y verifica el hash"
 // así que la persistencia entre recargas solo se prueba con E2E_PERSISTENCE=1 en un Chromium donde funcione.
 test("recuerda el USB al recargar", async ({ page }) => {
   test.skip(!process.env.E2E_PERSISTENCE, "requiere E2E_PERSISTENCE=1");
-  await page.goto("/");
+  await page.goto("/recursos/");
   await page.getByRole("button", { name: "Conectar USB" }).click();
   await expect(page.getByText("Conectado")).toBeVisible();
   await page.reload();
@@ -73,14 +73,14 @@ test("recuerda el USB al recargar", async ({ page }) => {
 });
 
 test("sin USB conectado pide conectarlo", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/recursos/");
   await page.getByRole("button", { name: /Guardar en el USB/ }).click();
   await expect(page.getByText("Primero conecta tu USB.")).toBeVisible();
 });
 
 test("cancelar una descarga no deja archivo en el USB", async ({ page, request }) => {
   await request.get("/__slow?ms=5000"); // los mirrors tardan: da tiempo a cancelar
-  await page.goto("/");
+  await page.goto("/recursos/");
   await page.getByRole("button", { name: "Conectar USB" }).click();
   await expect(page.getByText("Conectado")).toBeVisible();
   await page.getByRole("button", { name: /Guardar en el USB/ }).click();

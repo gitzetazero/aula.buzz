@@ -1,0 +1,10 @@
+---
+import Layout from "@aula/ui/Layout.astro";
+import AdminApp from "../components/AdminApp.tsx";
+import "../styles/admin.css";
+---
+
+<Layout title="Administración" current="admin" description="Panel de administración de aula.buzz.">
+  <h1>Administración</h1>
+  <AdminApp client:only="preact" />
+</Layout>

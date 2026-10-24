@@ -3,8 +3,7 @@ import { mkdtemp, readFile, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { parseCatalog } from "../../apps/recursos/src/lib/catalog.ts";
-import { upsertResource } from "./catalog-edit.ts";
+import { upsertSql } from "./catalog-sql.ts";
 import { partName, splitAndHash } from "./split.ts";
 
 const sha = (b: Buffer) => createHash("sha256").update(b).digest("hex");
@@ -47,7 +46,7 @@ describe("splitAndHash", () => {
   });
 });
 
-describe("upsertResource", () => {
+describe("upsertSql", () => {
   const H = "b".repeat(64);
   const entry = (extra = {}) => ({
     id: "demo", nombre: "Demo", descripcion: "x", asignatura: "SO", tipo: "vm", actualizado: "2026-10-01",
@@ -56,22 +55,18 @@ describe("upsertResource", () => {
     ...extra,
   });
 
-  it("añade a un catálogo vacío conservando los comentarios y produce un catálogo válido", () => {
-    const out = upsertResource("# cabecera\nrecursos: []\n", entry());
-    expect(out).toContain("# cabecera");
-    expect(parseCatalog(out).map((r) => r.id)).toEqual(["demo"]);
+  it("genera un upsert por id con la fecha en formato ISO", () => {
+    const sql = upsertSql(entry());
+    expect(sql).toContain("INSERT INTO resources (id, data, updated)");
+    expect(sql).toContain("ON CONFLICT(id) DO UPDATE");
+    expect(sql).toContain("'2026-10-01'");
   });
 
-  it("sustituye por id sin duplicar", () => {
-    const first = upsertResource("recursos: []\n", entry());
-    const second = upsertResource(first, entry({ nombre: "Demo v2" }));
-    const list = parseCatalog(second);
-    expect(list).toHaveLength(1);
-    expect(list[0]!.nombre).toBe("Demo v2");
+  it("escapa las comillas simples", () => {
+    expect(upsertSql(entry({ nombre: "O'Brien" }))).toContain("O''Brien");
   });
 
-  it("añade otro recurso al final", () => {
-    const out = upsertResource(upsertResource("recursos: []\n", entry()), entry({ id: "otro" }));
-    expect(parseCatalog(out).map((r) => r.id)).toEqual(["demo", "otro"]);
+  it("rechaza recursos inválidos", () => {
+    expect(() => upsertSql(entry({ id: "No Válido" }))).toThrow();
   });
 });

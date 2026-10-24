@@ -1,0 +1,10 @@
+---
+import Layout from "@aula/ui/Layout.astro";
+import ResourcePage from "../../components/ResourcePage.tsx";
+import "../../styles/recursos.css";
+---
+
+<Layout title="Recurso" current="recursos">
+  <p><a href={`${import.meta.env.BASE_URL.replace(/\/$/, "")}/`}>← Todos los recursos</a></p>
+  <ResourcePage client:only="preact" />
+</Layout>

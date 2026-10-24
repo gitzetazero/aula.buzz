@@ -247,3 +247,12 @@ select {
 .muted {
   color: var(--muted);
 }
+
+.announcement {
+  background: var(--accent);
+  color: #fff;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-size: 0.95rem;
+}
+.announcement[hidden] { display: none; }
